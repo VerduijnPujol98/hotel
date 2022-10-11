@@ -1,5 +1,8 @@
 import { Avatar, Button, Card, Container, createStyles, Group, Select, SimpleGrid, Text, TextInput } from '@mantine/core';
 import { DatePicker } from '@mantine/dates';
+import { db } from '../firebaseconfig';
+import { addDoc, collection,  } from 'firebase/firestore';
+import { useState } from 'react';
 
 const useStyles = createStyles((theme) => ({
   root: {
@@ -26,12 +29,28 @@ export function ContainedInputsRoom() {
   // You can add these classes as classNames to any Mantine input, it will work the same
   const { classes } = useStyles();
 
+  const [ username, setUserName ] = useState("")
+  const [ sitename, setSitename ] = useState("")
+  const [ commenttitle, setCommentTitle] = useState("")
+  const [ commentdescription, setCommentDescription] = useState("")
+
   const addData = async() => {
-    const docRef = await addDoc(collection(db, "cities"), {
-      name: "Tokyo",
-      country: "Japan"
-    });
-    console.log("Document written with ID: ", docRef.id);
+
+    await addDoc(collection(db, "comments"), {
+    
+      name: username,
+      site: sitename,
+      commentTitle: commenttitle,
+      commentDescription: commentdescription,
+    },
+    setUserName(""),
+    setSitename(""),
+    setCommentTitle(""),
+    setCommentDescription(""),
+    console.log("hello world")
+    );
+
+    
   }
 
   return (
@@ -70,17 +89,52 @@ export function ContainedInputsRoom() {
 
 
       <Container>
-        <TextInput style={{ marginTop: 20, zIndex: 2 }} label="User" placeholder="Name of User" classNames={classes} />
+
         <Select
-          style={{ marginTop: 20, zIndex: 2 }}
-          data={['AirBnB', 'Booking', 'Agoda']}
+          style={{ marginTop: 20, zIndex: 2, overflow:"visible" }}
+          data={[
+            { value: 'AirBnb', label: 'Airbnb' },
+            { value: 'Booking', label: 'Booking' },
+            { value: 'Agoda', label: 'Agoda' },
+          ]}
+          dropdownPosition="top"
           placeholder="Pick one"
           label="Where User's comment is from"
           classNames={classes}
+          onChange={(event) => setSitename(event.toString())}
+         
         />
-        <TextInput style={{ marginTop: 20, zIndex: 2 }} label="Comment Title" placeholder="User's comment Title" classNames={classes} />
-        <TextInput style={{ marginTop: 20, zIndex: 2 }} label="Comment Description" placeholder="What the user wrote" classNames={classes} />
-        <Button style={{ marginTop: 20, zIndex: 2 }} width='100vw'>Submit</Button>
+
+        <TextInput style={{ marginTop: 20, zIndex: 2 }} 
+        label="User" 
+        placeholder="Name of User" 
+        classNames={classes} 
+        onChange={(event) => setUserName(event.target.value)}
+        value={username}
+        />
+
+        <TextInput 
+        style={{ marginTop: 20, zIndex: 2 }} 
+        label="Comment Title" 
+        placeholder="User's comment Title" 
+        classNames={classes} 
+        onChange={(event) => setCommentTitle(event.target.value)}
+        />
+
+        <TextInput 
+        style={{ marginTop: 20, zIndex: 2 }} 
+        label="Comment Description" placeholder="What the user wrote" 
+        classNames={classes} 
+        onChange={(event) => setCommentDescription(event.target.value)}
+        />
+
+        <Button 
+        style={{ marginTop: 20, zIndex: 2 }} 
+        width='100vw'
+        onClick={addData}
+        >
+          
+          Submit</Button>
       </Container>
     </div>
   );
