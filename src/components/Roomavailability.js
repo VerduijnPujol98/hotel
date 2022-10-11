@@ -1,8 +1,8 @@
 import { Carousel } from '@mantine/carousel';
-import { createStyles, Container, Text, Button, Group, Grid, Skeleton, SimpleGrid, Card, Avatar, Image } from '@mantine/core';
-import { Dropzone } from '@mantine/dropzone';
+import { createStyles, Container, Text, Button, Group, Grid, Skeleton, SimpleGrid, Card, Avatar, Image, useMantineTheme } from '@mantine/core';
+import { Dropzone, IMAGE_MIME_TYPE } from '@mantine/dropzone';
 import { GithubIcon } from '@mantine/ds';
-import { IconStar } from '@tabler/icons';
+import { IconPhoto, IconStar, IconUpload, IconX } from '@tabler/icons';
 
 const BREAKPOINT = '@media (max-width: 755px)';
 
@@ -173,12 +173,6 @@ export function Roomavailability() {
               / night
             </Text>
           </div>
-
-          <Dropzone
-          ultiple={false}
-          onDrop={(files) => console.log('accepted files', files)}>
-            
-          </Dropzone>
 
           <Button radius="md">Book now</Button>
         </Group>

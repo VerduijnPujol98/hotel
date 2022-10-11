@@ -1,10 +1,12 @@
 import { Avatar, Button, Card, Container, createStyles, Group, Image, Select, SimpleGrid, Text, TextInput } from '@mantine/core';
 import { DatePicker } from '@mantine/dates';
-import { db } from '../firebaseconfig';
+import { db, storage } from '../firebaseconfig';
 import { addDoc, collection,  } from 'firebase/firestore';
 import { useState } from 'react';
 import { Carousel } from '@mantine/carousel';
 import { IconStar } from '@tabler/icons';
+import { Dropzone, IMAGE_MIME_TYPE } from '@mantine/dropzone';
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 
 const useStyles = createStyles((theme) => ({
   root: {
@@ -35,17 +37,40 @@ export function ContainedInputsRoom() {
   const [ rating, setRating ] = useState("")
   const [ roomdescription, setRoomDescription] = useState("")
   const [ price, setPrice] = useState("")
+  const [ photo, setPhoto] = useState()
+  const [ url, setUrl ] = useState("")
+
+  const promiseTimeout = new Promise((resolve) => (setTimeout(() => resolve(false),  5000)))
+
+
 
   const addData = async() => {
-
-    await addDoc(collection(db, "rooms", roomname), {
     
+  
+  const storageRef = ref(storage, `files/${photo.name}`);
+  uploadBytes(storageRef, photo).then((snapshot) => {
+    console.log('Uploaded a blob or file!');
+    getDownloadURL(storageRef)
+    .then((url) => {
+      setUrl(url)
+      console.log(url)
+    })
+  });
+
+  const response = await Promise.race([promiseTimeout])
+  if(!response){
+    await addDoc(collection(db, "rooms", roomname), {
       name: roomname,
       rating: rating,
       roomDescription: roomdescription,
       roomprice: price,
+      url: url,
     },);  
+    console.log("DB ADDED")
   }
+    
+  }
+
 
   const images = [
     'https://images.unsplash.com/photo-1598928506311-c55ded91a20c?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=720&q=80',
@@ -152,6 +177,32 @@ export function ContainedInputsRoom() {
         classNames={classes} 
         onChange={(event) => setRating(event.target.value)}
         />
+
+          <Dropzone
+            style={{ marginTop: 20, zIndex: 2 }}
+            onDrop={(e) => setPhoto(e[0])}
+            accept={IMAGE_MIME_TYPE}
+            sx={(theme) => ({
+              minHeight: 120,
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              border: 0,
+              backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
+
+              '&[data-accept]': {
+                color: theme.white,
+                backgroundColor: theme.colors.blue[6],
+              },
+
+              '&[data-reject]': {
+                color: theme.white,
+                backgroundColor: theme.colors.red[6],
+              },
+            })}
+          >
+            <Text align="center">Drop images here</Text>
+          </Dropzone>
 
         <Button 
         style={{ marginTop: 20, zIndex: 2 }} 
