@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { createStyles, Header, Container, Group, Burger, Button, Transition, Paper } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { MantineLogo } from '@mantine/ds';
+import { useLocation } from 'react-router-dom';
 
 const HEADER_HEIGHT = 60;
 
@@ -65,10 +66,14 @@ const useStyles = createStyles((theme) => ({
 
 
   linkActive: {
-    '&, &:hover': {
-      backgroundColor: theme.fn.variant({ variant: 'light', color: theme.primaryColor }).background,
+      display: 'block',
+      lineHeight: 1,
+      padding: '8px 12px',
+      borderRadius: theme.radius.sm,
+      textDecoration: 'none',
+      fontSize: theme.fontSizes.sm,
+      fontWeight: 500,
       color: theme.fn.variant({ variant: 'light', color: theme.primaryColor }).color,
-    },
   },
 
 }));
@@ -76,9 +81,10 @@ const useStyles = createStyles((theme) => ({
 
 
 export function HeaderSimple() {
+
   const [opened, { toggle }] = useDisclosure(false);  
   const { classes, cx } = useStyles();
-  
+  let location = useLocation()
 
 
   return (
@@ -87,8 +93,8 @@ export function HeaderSimple() {
         <MantineLogo size={28} />
         <Group spacing={5} className={classes.links}>
         <a
-      href="/login"
-      className={cx(classes.link)}>
+      href="/"
+      className={location.pathname = "/" ? classes.linkActive : classes.link}>
         Home
     </a>
     <a

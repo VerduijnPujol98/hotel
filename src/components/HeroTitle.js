@@ -12,7 +12,7 @@ const useStyles = createStyles((theme) => ({
 
   inner: {
     display: 'flex',
-    paddingTop: 150,
+    paddingTop: 120,
     paddingBottom: 120,
     flexDirection:'column',
 

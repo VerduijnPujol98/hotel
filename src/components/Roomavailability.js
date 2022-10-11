@@ -68,18 +68,17 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
-export function CustomersSection() {
+export function Roomavailability() {
   const { classes } = useStyles();
   return (
     <div className={classes.wrapper}>
       <Container size='md' className={classes.inner}>
 
       <Text size="lg" weight={500} className={classes.title} >
-          What{' '}
           <Text component="span" variant="gradient" gradient={{ from: 'green', to: '#3E7D45' }} inherit>
-            our customers
+            Room
           </Text>{' '}
-          say
+          Availability
         </Text>
         <SimpleGrid cols={3} spacing="xl" mt={50} breakpoints={[{ maxWidth: 'md', cols: 1 }]}>
         <Card shadow="md" radius="md" className={classes.card} p="xl">
@@ -106,54 +105,7 @@ export function CustomersSection() {
 
         </Card>
 
-        <Card shadow="md" radius="md" className={classes.card} p="xl">
-            <Group noWrap>
-                <Avatar size={70} radius={120} mx="auto"/>
-                 <div>
-                    <Text size="lg" weight={500}>
-                        Asuka Leen Verduijn
-                    </Text>
-                    <Text size="xs" weight={400} color="dimmed">
-                        AirBnB
-                    </Text>
-                 </div>
-            </Group>
-            
-            <Text size="md" sx={{ marginTop: 40 }} weight={400} >
-            Awesome Service
-            </Text>
-            
-            <Text size="md" sx={{ marginTop: 20 }} color="dimmed" weight={300} >
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
-            sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-            </Text>
 
-        </Card>
-
-
-        <Card shadow="md" radius="md" className={classes.card} p="xl">
-            <Group noWrap>
-                <Avatar size={70} radius={120} mx="auto"/>
-                 <div>
-                    <Text size="lg" weight={500}>
-                        Asuka Leen Verduijn
-                    </Text>
-                    <Text size="xs" weight={400} color="dimmed">
-                        AirBnB
-                    </Text>
-                 </div>
-            </Group>
-            
-            <Text size="md" sx={{ marginTop: 40 }} weight={400} >
-            Awesome Service
-            </Text>
-            
-            <Text size="md" sx={{ marginTop: 20 }} color="dimmed" weight={300} >
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
-            sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-            </Text>
-
-        </Card>
         </SimpleGrid>
       
       </Container>
