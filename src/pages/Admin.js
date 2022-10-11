@@ -1,12 +1,11 @@
 import React from 'react'
-import { Roomavailability } from '../components/Roomavailability';
 import { ContainedInputsRoom } from '../componentsadmin/ContainedInputsRoom';
-import { RoomavailabilityAdmin } from '../componentsadmin/RoomavailabilityAdmin';
+import { CustomersSectionAdmin } from '../componentsadmin/CustomersSectionAdmin';
 
 const Admin = () => {
   return (
     <div>
-        <RoomavailabilityAdmin />
+        <CustomersSectionAdmin />
         <ContainedInputsRoom />
     </div>
   );
