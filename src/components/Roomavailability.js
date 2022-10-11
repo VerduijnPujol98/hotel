@@ -1,5 +1,6 @@
 import { Carousel } from '@mantine/carousel';
 import { createStyles, Container, Text, Button, Group, Grid, Skeleton, SimpleGrid, Card, Avatar, Image } from '@mantine/core';
+import { Dropzone } from '@mantine/dropzone';
 import { GithubIcon } from '@mantine/ds';
 import { IconStar } from '@tabler/icons';
 
@@ -121,7 +122,7 @@ export function Roomavailability() {
       <Container size='md' className={classes.inner}>
 
       <Text size="lg" weight={500} className={classes.title} >
-          Our{' '}
+          Some of Our{' '}
           <Text component="span" variant="gradient" gradient={{ from: 'green', to: '#3E7D45' }} inherit>
             Available
           </Text>{' '}
@@ -172,6 +173,12 @@ export function Roomavailability() {
               / night
             </Text>
           </div>
+
+          <Dropzone
+          ultiple={false}
+          onDrop={(files) => console.log('accepted files', files)}>
+            
+          </Dropzone>
 
           <Button radius="md">Book now</Button>
         </Group>
