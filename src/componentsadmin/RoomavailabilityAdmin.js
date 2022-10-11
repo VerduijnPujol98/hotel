@@ -172,6 +172,7 @@ export function Roomavailability() {
               / night
             </Text>
           </div>
+          
 
           <Button radius="md">Book now</Button>
         </Group>
