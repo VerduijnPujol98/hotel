@@ -5,7 +5,7 @@ import { collection, getDocs } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import { db } from '../firebaseconfig';
 
-const BREAKPOINT = '@media (max-width: 755px)';
+const BREAKPOINT = '@media (max-width: 500px)';
 
 const useStyles = createStyles((theme) => ({
   wrapper: {
@@ -108,8 +108,8 @@ export function CustomersSection() {
           slideGap="md"
           slidesToScroll={1}
           breakpoints={[
-            { maxWidth: 'md', slideSize: '50%' },
-            { maxWidth: 'sm', slideSize: '100%', slideGap: 0 },
+            { maxWidth: 'md', slideSize: '30%' },
+            { maxWidth: 'sm', slideSize: '40%', slideGap: 0 },
           ]}
           align="start"
           sx={{marginTop:120}}>

@@ -113,6 +113,9 @@ export function CustomersSectionAdmin() {
     <div className={classes.wrapper}>
       <Container size='md' className={classes.inner}>
       
+      <Text size="lg" weight={500} className={classes.title2} >
+          !!! Everything shown on this page is a representation of how it would look like on the site. !!!
+        </Text>
 
       <Text size="lg" weight={500} className={classes.title} >
       What{' '}
@@ -121,9 +124,7 @@ export function CustomersSectionAdmin() {
           </Text>{' '}
           say
         </Text>
-        <Text size="lg" weight={500} className={classes.title2} >
-          (How it will look on the site.)
-        </Text>
+
         <Carousel
           withIndicators
           height={400}

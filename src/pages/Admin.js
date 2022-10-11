@@ -1,12 +1,14 @@
 import React from 'react'
-import { ContainedInputsRoom } from '../componentsadmin/ContainedInputsRoom';
+import { ContainedInputsCustomer } from '../componentsadmin/ContainedInputsCustomer';
 import { CustomersSectionAdmin } from '../componentsadmin/CustomersSectionAdmin';
+import { Roomavailability } from '../componentsadmin/RoomavailabilityAdmin';
 
 const Admin = () => {
   return (
     <div>
         <CustomersSectionAdmin />
-        <ContainedInputsRoom />
+        <ContainedInputsCustomer />
+        <Roomavailability />
     </div>
   );
 }

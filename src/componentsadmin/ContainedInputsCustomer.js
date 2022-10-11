@@ -25,7 +25,7 @@ const useStyles = createStyles((theme) => ({
 }));
 
 
-export function ContainedInputsRoom() {
+export function ContainedInputsCustomer() {
   // You can add these classes as classNames to any Mantine input, it will work the same
   const { classes } = useStyles();
 

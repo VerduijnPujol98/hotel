@@ -14,7 +14,7 @@ const useStyles = createStyles((theme, _params, getRef) => ({
 
   inner: {
     display: 'flex',
-    paddingTop: 80,
+    paddingTop: 120,
     paddingBottom: 120,
     flexDirection:'column',
 
