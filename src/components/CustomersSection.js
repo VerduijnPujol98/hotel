@@ -103,7 +103,7 @@ export function CustomersSection() {
         </Text>
         <Carousel
           withIndicators
-          height={400}
+          height={350}
           slideSize="33.33333%  "
           slideGap="md"
           slidesToScroll={1}
@@ -112,7 +112,7 @@ export function CustomersSection() {
             { maxWidth: 'sm', slideSize: '40%', slideGap: 0 },
           ]}
           align="start"
-          sx={{marginTop:120}}>
+          sx={{marginTop:60}}>
 
         {Object.values(getdata).map((data, i ) => {
         return(
