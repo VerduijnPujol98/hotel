@@ -1,7 +1,7 @@
 import { Avatar, Button, Card, Container, createStyles, Group, Image, Select, SimpleGrid, Text, TextInput } from '@mantine/core';
 import { DatePicker } from '@mantine/dates';
 import { db, storage } from '../firebaseconfig';
-import { addDoc, collection,  } from 'firebase/firestore';
+import { addDoc, collection, doc, setDoc,  } from 'firebase/firestore';
 import { useState } from 'react';
 import { Carousel } from '@mantine/carousel';
 import { IconStar } from '@tabler/icons';
@@ -38,36 +38,34 @@ export function ContainedInputsRoom() {
   const [ roomdescription, setRoomDescription] = useState("")
   const [ price, setPrice] = useState("")
   const [ photo, setPhoto] = useState()
-  const [ url, setUrl ] = useState("")
+  const [ picurl, setUrl ] = useState("")
 
-  const promiseTimeout = new Promise((resolve) => (setTimeout(() => resolve(false),  5000)))
+ 
 
 
 
-  const addData = async() => {
+
+  const addData = async () => {
     
   
   const storageRef = ref(storage, `files/${photo.name}`);
   uploadBytes(storageRef, photo).then((snapshot) => {
     console.log('Uploaded a blob or file!');
     getDownloadURL(storageRef)
-    .then((url) => {
+    .then( async ( url) => {
       setUrl(url)
-      console.log(url)
+      console.log(picurl)
+      await setDoc(doc(db, "rooms", roomname), {
+        name: roomname,
+        rating: rating,
+        roomDescription: roomdescription,
+        roomprice: price,
+        url: url,
+      },);  
+      console.log("DB ADDED")
     })
   });
 
-  const response = await Promise.race([promiseTimeout])
-  if(!response){
-    await addDoc(collection(db, "rooms", roomname), {
-      name: roomname,
-      rating: rating,
-      roomDescription: roomdescription,
-      roomprice: price,
-      url: url,
-    },);  
-    console.log("DB ADDED")
-  }
     
   }
 
@@ -177,7 +175,9 @@ export function ContainedInputsRoom() {
         classNames={classes} 
         onChange={(event) => setRating(event.target.value)}
         />
-
+          <Text  style={{ marginTop: 40, zIndex: 2 }} >
+            Room pictures
+          </Text>
           <Dropzone
             style={{ marginTop: 20, zIndex: 2 }}
             onDrop={(e) => setPhoto(e[0])}
