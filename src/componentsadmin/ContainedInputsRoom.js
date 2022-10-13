@@ -6,7 +6,8 @@ import { useState } from 'react';
 import { Carousel } from '@mantine/carousel';
 import { IconStar } from '@tabler/icons';
 import { Dropzone, IMAGE_MIME_TYPE } from '@mantine/dropzone';
-import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import { getDownloadURL, ref, uploadBytes, uploadBytesResumable } from 'firebase/storage';
+import { async } from '@firebase/util';
 
 const useStyles = createStyles((theme) => ({
   root: {
@@ -37,36 +38,45 @@ export function ContainedInputsRoom() {
   const [ rating, setRating ] = useState("")
   const [ roomdescription, setRoomDescription] = useState("")
   const [ price, setPrice] = useState("")
-  const [ photo, setPhoto] = useState()
-  const [ picurl, setUrl ] = useState("")
+  const [ photo, setPhoto] = useState([])
+  const [ picurl, setUrl ] = useState([])
 
- 
+  /*await setDoc(doc(db, "rooms", roomname), {
+    name: roomname,
+    rating: rating,
+    roomDescription: roomdescription,
+    roomprice: price,
+    url: url,
+  },);  
 
-
+*/
 
 
   const addData = async () => {
-    
-  
-  const storageRef = ref(storage, `files/${photo.name}`);
-  uploadBytes(storageRef, photo).then((snapshot) => {
-    console.log('Uploaded a blob or file!');
-    getDownloadURL(storageRef)
-    .then( async ( url) => {
-      setUrl(url)
-      console.log(picurl)
-      await setDoc(doc(db, "rooms", roomname), {
-        name: roomname,
-        rating: rating,
-        roomDescription: roomdescription,
-        roomprice: price,
-        url: url,
-      },);  
-      console.log("DB ADDED")
-    })
-  });
+    const photos = []
+    photo.map((file) => {
+      console.log(file)
+      const storageRef = ref(storage, `files/${file.name}`);
 
-    
+      uploadBytes(storageRef, file).then((snapshot) => {
+        console.log("snapshot")
+        getDownloadURL(snapshot.ref).then(async(downloadUrl) => {
+          photos.push(downloadUrl)
+          console.log("downloaded URL")
+
+          await setDoc(doc(db, "rooms", roomname), {
+            name: roomname,
+            rating: rating,
+            roomDescription: roomdescription,
+            roomprice: price,
+            url: photos,
+          })
+          console.log("added to db")
+        })
+      })
+
+    })
+    return Promise.resolve(photos)
   }
 
 
@@ -180,7 +190,8 @@ export function ContainedInputsRoom() {
           </Text>
           <Dropzone
             style={{ marginTop: 20, zIndex: 2 }}
-            onDrop={(e) => setPhoto(e[0])}
+            multiple = {true}
+            onDrop={(e) => setPhoto(e)}
             accept={IMAGE_MIME_TYPE}
             sx={(theme) => ({
               minHeight: 120,

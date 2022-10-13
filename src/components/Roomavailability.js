@@ -3,6 +3,9 @@ import { createStyles, Container, Text, Button, Group, Grid, Skeleton, SimpleGri
 import { Dropzone, IMAGE_MIME_TYPE } from '@mantine/dropzone';
 import { GithubIcon } from '@mantine/ds';
 import { IconPhoto, IconStar, IconUpload, IconX } from '@tabler/icons';
+import { collection, getDocs } from 'firebase/firestore';
+import { useEffect, useState } from 'react';
+import { db } from '../firebaseconfig';
 
 const BREAKPOINT = '@media (max-width: 755px)';
 
@@ -103,19 +106,21 @@ export function Roomavailability() {
   const { classes } = useStyles();
 
 
-  const images = [
-    'https://images.unsplash.com/photo-1598928506311-c55ded91a20c?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=720&q=80',
-    'https://images.unsplash.com/photo-1567767292278-a4f21aa2d36e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=720&q=80',
-    'https://images.unsplash.com/photo-1605774337664-7a846e9cdf17?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=720&q=80',
-    'https://images.unsplash.com/photo-1554995207-c18c203602cb?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=720&q=80',
-    'https://images.unsplash.com/photo-1616486029423-aaa4789e8c9a?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=720&q=80',
-  ];
+  const [ getdata, setGetdata ] = useState("")
 
-  const slides = images.map((image) => (
-    <Carousel.Slide key={image}>
-      <Image src={image} height={220} />
-    </Carousel.Slide>
-  ));
+  const printData = async() => {
+      const querySnapshot = await getDocs(collection(db, "rooms"));
+      let setData = [];
+      querySnapshot.forEach((doc) => {
+      setData.push(doc.data())
+      setGetdata(setData)
+    });
+      }
+
+
+  useEffect(() => {
+    printData()
+  }, [])
 
   return (
     <div className={classes.wrapper}>
@@ -129,55 +134,71 @@ export function Roomavailability() {
           Rooms
         </Text>
 
-        <SimpleGrid cols={3} spacing="xl" mt={50} breakpoints={[{ maxWidth: 'md', cols: 1 }]}>
-        <Card shadow="md" radius="md" className={classes.card} p="xl">
-        <Card.Section>
-          <Carousel
-            withIndicators
-            loop
-            classNames={{
-              root: classes.carousel,
-              controls: classes.carouselControls,
-              indicator: classes.carouselIndicator,
-            }}
-          >
-            {slides}
-          </Carousel>
-        </Card.Section>
+        <SimpleGrid cols={3} spacing="xl" mt={40} breakpoints={[{ maxWidth: 'md', cols: 1 }]}>
 
-        <Group position="apart" mt="lg">
-          <Text weight={500} size="lg">
-            Studio 1
-          </Text>
+          {Object.values(getdata).map((data, i) => {
+            const images = data.url
+            
+            const slides = Object.values(images).map((image) => {  
+              return(
+              <Carousel.Slide key={image}>
+              <Image src={image} height={220} />
+            </Carousel.Slide>
+              )
+            })
+          return(
 
-          <Group spacing={5}>
-            <IconStar size={16} />
-            <Text size="xs" weight={500}>
-              5
-            </Text>
-          </Group>
-        </Group>
+                <Card shadow="md" radius="md" className={classes.card} p="xl" key={i}>
+                <Card.Section>
+                  <Carousel
+                    withIndicators
+                    loop
+                    classNames={{
+                      root: classes.carousel,
+                      controls: classes.carouselControls,
+                      indicator: classes.carouselIndicator,
+                    }}
+                  >
+                    {slides}
+                  </Carousel>
+                </Card.Section>
 
-        <Text size="sm" color="dimmed" mt="sm">
-          Relax, rejuvenate and unplug in this unique contemporary Birdbox. Feel close to nature in
-          ultimate comfort. Enjoy the view of the epic mountain range of Blegja and the Førdefjord.
-        </Text>
+                <Group position="apart" mt="lg">
+                  <Text weight={500} size="lg">
+                    {data.name}
+                  </Text>
 
-        <Group position="apart" mt="md">
-          <div>
-            <Text size="xl" span weight={500} className={classes.price}>
-              50$
-            </Text>
-            <Text span size="sm" color="dimmed">
-              {' '}
-              / night
-            </Text>
-          </div>
+                  <Group spacing={5}>
+                    <IconStar size={16} />
+                    <Text size="xs" weight={500}>
+                      {data.rating}
+                    </Text>
+                  </Group>
+                </Group>
 
-          <Button radius="md">Book now</Button>
-        </Group>
-      </Card>
-      </SimpleGrid>
+                <Text size="sm" color="dimmed" mt="sm">
+                  {data.roomDescription}
+                </Text>
+
+                <Group position="apart" mt="md">
+                  <div>
+                    <Text size="xl" span weight={500} className={classes.price}>
+                      {data.roomprice} VND
+                    </Text>
+                    <Text span size="sm" color="dimmed">
+                      {' '}
+                      / night
+                    </Text>
+                  </div>
+                  
+
+                  <Button radius="md">Book now</Button>
+                </Group>
+              </Card>
+
+                )
+              })}
+        </SimpleGrid>
       </Container>
 
     </div>

@@ -1,6 +1,5 @@
 import { Carousel } from '@mantine/carousel';
 import { createStyles, Container, Text, Button, Group, Grid, Skeleton, SimpleGrid, Card, Avatar, Image } from '@mantine/core';
-import { GithubIcon } from '@mantine/ds';
 import { IconStar } from '@tabler/icons';
 import { collection, getDocs } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
@@ -129,22 +128,28 @@ export function Roomavailability() {
       <Container size='md' className={classes.inner}>
 
       <Text size="lg" weight={500} className={classes.title} >
-          Our{' '}
+          Some of Our{' '}
           <Text component="span" variant="gradient" gradient={{ from: 'green', to: '#3E7D45' }} inherit>
             Available
           </Text>{' '}
           Rooms
         </Text>
 
-        {Object.values(getdata).map((data, i) => {
-          const images = [data.url]
-          const slides = images.map((image) => (
-            <Carousel.Slide key={image}>
+
+
+        <SimpleGrid cols={3} spacing="xl" mt={40} breakpoints={[{ maxWidth: 'md', cols: 1 }]}>
+          {Object.values(getdata).map((data, i) => {
+            const images = data.url
+            
+            const slides = Object.values(images).map((image) => {  
+              return(
+              <Carousel.Slide key={image}>
               <Image src={image} height={220} />
             </Carousel.Slide>
-          ));
-        return(
-        <SimpleGrid cols={3} spacing="xl" mt={50} breakpoints={[{ maxWidth: 'md', cols: 1 }]}>
+              )
+            })
+          return(
+
                 <Card shadow="md" radius="md" className={classes.card} p="xl" key={i}>
                 <Card.Section>
                   <Carousel
@@ -192,10 +197,10 @@ export function Roomavailability() {
                   <Button radius="md">Book now</Button>
                 </Group>
               </Card>
-              </SimpleGrid>
+
                 )
               })}
-
+        </SimpleGrid>
         
       </Container>
 
