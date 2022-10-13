@@ -1,8 +1,9 @@
 
+import { async } from '@firebase/util';
 import { Carousel } from '@mantine/carousel';
-import { createStyles, Container, Text, Button, Group, Grid, Skeleton, SimpleGrid, Card, Avatar } from '@mantine/core';
+import { createStyles, Container, Text, Button, Group, Grid, Skeleton, SimpleGrid, Card, Avatar, CloseButton } from '@mantine/core';
 import { GithubIcon } from '@mantine/ds';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, deleteDoc, doc, getDocs, query, where } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import { db } from '../firebaseconfig';
 const BREAKPOINT = '@media (max-width: 755px)';
@@ -143,6 +144,24 @@ export function CustomersSectionAdmin() {
         return(
           <Carousel.Slide sx={{marginLeft: 20}}>
           <Card shadow="md" radius="md" className={classes.card} p="xl">
+            <Group>
+            <CloseButton style={{marginLeft: 'auto'}} aria-label="Close modal" 
+            onClick={async() => {
+              
+              const q = query(collection(db, "comments"), where("name", "==", data.name), 
+                                                          where("commentTitle", "==", data.commentTitle), 
+                                                          where("site", "==", data.site));
+
+                                                          const querySnapshot = await getDocs(q);
+                                                          querySnapshot.forEach((doc) =>{
+                                                            deleteDoc(doc.ref)
+                                                            .then(() => {
+                                                              console.log("Doc Deleted")
+                                                            })
+                                                          })
+            }}
+            />
+            </Group>
             <Group spacing='xs'>
                 <Avatar size={70} radius={120} />
                  <div style={{marginRight: 'auto'}}>
@@ -153,7 +172,6 @@ export function CustomersSectionAdmin() {
                         {data.site}
                     </Text>
                  </div>
-                 
                  
             </Group>
             
