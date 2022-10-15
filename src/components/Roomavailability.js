@@ -5,7 +5,10 @@ import { GithubIcon } from '@mantine/ds';
 import { IconPhoto, IconStar, IconUpload, IconX } from '@tabler/icons';
 import { collection, getDocs } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { db } from '../firebaseconfig';
+import { useDispatch } from 'react-redux';
+import { setRoom } from '../features/createSlice';
 
 const BREAKPOINT = '@media (max-width: 755px)';
 
@@ -105,6 +108,7 @@ const useStyles = createStyles((theme, _params, getRef) => ({
 export function Roomavailability() {
   const { classes } = useStyles();
 
+  const dispatch = useDispatch()
 
   const [ getdata, setGetdata ] = useState("")
 
@@ -121,6 +125,8 @@ export function Roomavailability() {
   useEffect(() => {
     printData()
   }, [])
+
+
 
   return (
     <div className={classes.wrapper}>
@@ -191,8 +197,15 @@ export function Roomavailability() {
                     </Text>
                   </div>
                   
+                  <Link to="/checkout">
+                  <Button radius="md" onClick={()=>{
+                    dispatch(setRoom({name: data.name, 
+                                      roomid: data.roomid, 
+                                      checkindate: data.checkindate, 
+                                      checkoutdate: data.checkoutdate}))
 
-                  <Button radius="md">Book now</Button>
+                  }}>Book now</Button>
+                  </Link>
                 </Group>
               </Card>
 
