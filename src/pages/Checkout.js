@@ -59,13 +59,35 @@ const Checkout = () => {
     useEffect(() => {
         DocQuery()
         console.log(getData)
+
     }, [])
 
     const [active, setActive] = useState(0);
     const nextStep = () => setActive((current) => (current < 3 ? current + 1 : current))
     const prevStep = () => setActive((current) => (current > 0 ? current - 1 : current))
 
+    
 
+        const listDate = [];
+        const startDate ='2022-10-19T00:00';
+        const endDate = '2022-10-20T00:00';
+        const dateMove = new Date(startDate);
+        let strDate = startDate;
+
+        while (strDate < endDate) {
+        strDate = dateMove.toISOString().slice(0, 10);
+        listDate.push(strDate);
+        dateMove.setDate(dateMove.getDate() + 1);
+        };
+
+        const updatedTime = Object.keys(listDate).map((data) => {
+            return (date) => date.getTime() === new Date(data).getTime()
+        })
+
+        console.log(updatedTime)
+
+
+    //(date) => date.getTime() === new Date('2022-10-20T00:00').getTime()
 
   return (
     <div style={{display: 'flex', alignContent:'center', justifyContent: 'center'}}> 
@@ -86,8 +108,11 @@ const Checkout = () => {
                 minDate={dayjs(new Date()).add(1, 'days').toDate()} 
                 placeholder="Pick date" 
                 label="Check In"
+                excludeDate={(date) => date.getTime() === new Date('2022-10-20T00:00').getTime()}
                 />
+                
                 <Button sx={{marginTop: 20}} onClick={() => {console.log(realtimedata)}}>Test</Button>
+
             </Stepper.Step>
             <Stepper.Step label="Second Step" description="Fill in basic information">
                 Step 2 Content
