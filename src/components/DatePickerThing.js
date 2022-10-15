@@ -50,7 +50,11 @@ export function DatePickerThing() {
                   value={checkinvalue} 
                   onChange={checkinonChange} 
                   placeholder="Pick date" 
-                  label="Check In" />
+                  label="Check In" 
+                  excludeDate= {(date) => date.getTime() === new Date('2022-10-17T00:00').getTime()
+                  
+                }
+                  />
 
       <DatePicker minDate={dayjs(new Date(checkinvalue)).add(1, 'days').toDate()} 
                   value={checkoutvalue} 
@@ -70,7 +74,7 @@ export function DatePickerThing() {
     }}
     
     onClick={() => {
-      console.log()
+      console.log(checkinvalue)
     }}>
       Book
     </Button>

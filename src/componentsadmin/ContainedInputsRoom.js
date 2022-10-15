@@ -8,6 +8,7 @@ import { IconStar } from '@tabler/icons';
 import { Dropzone, IMAGE_MIME_TYPE } from '@mantine/dropzone';
 import { getDownloadURL, ref, uploadBytes, uploadBytesResumable } from 'firebase/storage';
 import { async } from '@firebase/util';
+import dayjs from 'dayjs';
 
 const useStyles = createStyles((theme) => ({
   root: {
@@ -39,7 +40,7 @@ export function ContainedInputsRoom() {
   const [ roomdescription, setRoomDescription] = useState("")
   const [ price, setPrice] = useState("")
   const [ photo, setPhoto] = useState([])
-  const [ picurl, setUrl ] = useState([])
+  const [ date, setDate ] = useState("")
 
   /*await setDoc(doc(db, "rooms", roomname), {
     name: roomname,
@@ -70,6 +71,7 @@ export function ContainedInputsRoom() {
             roomDescription: roomdescription,
             roomprice: price,
             url: photos,
+            date: date,
           })
           console.log("added to db")
         })
@@ -155,6 +157,13 @@ export function ContainedInputsRoom() {
 
 
       <Container>
+
+        <DatePicker
+        minDate={dayjs(new Date()).add(1, 'days').toDate()} 
+        onChange={setDate} 
+        placeholder="Pick date" 
+        label="Check In" >
+        </DatePicker>
 
 
         <TextInput style={{ marginTop: 20, zIndex: 2 }} 
