@@ -4,7 +4,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Button, Card, Select, Stepper, Text } from '@mantine/core'
 import { collection, doc, getDocs, onSnapshot, query, where } from 'firebase/firestore'
 import { db } from '../firebaseconfig'
-import { DatePicker } from '@mantine/dates'
+import ReactDatePicker from 'react-datepicker'
+import 'react-datepicker/dist/react-datepicker.css'
 import { setRoom } from '../features/createSlice'
 import dayjs from 'dayjs'
 
@@ -14,6 +15,7 @@ const Checkout = () => {
     const [roomdata, setRoomData ] = useState([]);
     const [getData, setGetData] = useState([])
     const [getDatadate, setGetDatadate] = useState([0])
+    const [startdate, setStartDate ] = useState(new Date())
 
     const dispatch = useDispatch()
 
@@ -45,15 +47,6 @@ const Checkout = () => {
             })
         })
 
-        
-        function getAllNumbers(x, y) {
-            var numbers = []
-            for (var i = x; i < y; i++) {
-                numbers.push(i)
-            }
-            return numbers
-        }
-
 
 
     useEffect(() => {
@@ -68,6 +61,12 @@ const Checkout = () => {
 
     
 
+        const handleChange = (value) => {
+            setStartDate(value)
+        }
+
+
+
         const listDate = [];
         const startDate ='2022-10-19T00:00';
         const endDate = '2022-10-20T00:00';
@@ -80,11 +79,8 @@ const Checkout = () => {
         dateMove.setDate(dateMove.getDate() + 1);
         };
 
-        const updatedTime = Object.keys(listDate).map((data) => {
-            return (date) => date.getTime() === new Date(data).getTime()
-        })
 
-        console.log(updatedTime)
+
 
 
     //(date) => date.getTime() === new Date('2022-10-20T00:00').getTime()
@@ -102,15 +98,8 @@ const Checkout = () => {
                 onChange={(event) => {setRoomData(event); }}
                 >   
                 </Select>
-
-                <DatePicker 
-                sx={{marginTop: 20}}
-                minDate={dayjs(new Date()).add(1, 'days').toDate()} 
-                placeholder="Pick date" 
-                label="Check In"
-                excludeDate={(date) => date.getTime() === new Date('2022-10-20T00:00').getTime()}
-                />
-                
+                <ReactDatePicker excludeDates={listDate.map((data) => {return new Date(data);})}  onChange={handleChange} selected={startdate}>
+                </ReactDatePicker>
                 <Button sx={{marginTop: 20}} onClick={() => {console.log(realtimedata)}}>Test</Button>
 
             </Stepper.Step>
