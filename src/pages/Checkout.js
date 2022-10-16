@@ -1,23 +1,21 @@
 import React, { forwardRef, useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { Button, Card, Select, Stepper, Text } from '@mantine/core'
 import { collection, doc, getDocs, onSnapshot, query, where } from 'firebase/firestore'
 import { db } from '../firebaseconfig'
 import ReactDatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
-import { setRoom } from '../features/createSlice'
 import dayjs from 'dayjs'
+import { ref } from 'firebase/storage'
 
 const Checkout = () => {
 
     const room = useSelector((state) => state.room.value)
     const [roomdata, setRoomData ] = useState([]);
     const [getData, setGetData] = useState([])
-    const [getDatadate, setGetDatadate] = useState([0])
     const [startdate, setStartDate ] = useState(new Date())
 
-    const dispatch = useDispatch()
 
     const DocQuery = async () => {
         const querySnapshot = await getDocs(collection(db, "rooms"));
@@ -45,6 +43,7 @@ const Checkout = () => {
                 snapshot.push(doc.data())
                 setrealtimedata(snapshot)
             })
+            
         })
 
 
@@ -52,6 +51,9 @@ const Checkout = () => {
     useEffect(() => {
         DocQuery()
         console.log(getData)
+        
+
+        
 
     }, [])
 
@@ -61,14 +63,9 @@ const Checkout = () => {
 
     
 
-        const handleChange = (value) => {
-            setStartDate(value)
-        }
-
-
 
         const listDate = [];
-        const startDate ='2022-10-19T00:00';
+        const startDate = '2022-10-18T00:00';
         const endDate = '2022-10-20T00:00';
         const dateMove = new Date(startDate);
         let strDate = startDate;
@@ -82,14 +79,13 @@ const Checkout = () => {
 
 
 
-
     //(date) => date.getTime() === new Date('2022-10-20T00:00').getTime()
 
   return (
     <div style={{display: 'flex', alignContent:'center', justifyContent: 'center'}}> 
     <Card shadow="sm" p="lg" radius="md" withBorder sx={{width: '50vw', margin: 100, overflow: 'visible',}}>
-        <Stepper active={active} onStepClick={setActive} breakpoint="sm">
-            <Stepper.Step label="First Step" description="Fill in basic information">
+        <Stepper active={active} onStepClick={setActive} breakpoint="sm" >
+            <Stepper.Step label="First Step" description="Select Room and amount of People">
                 <Select
                 label="Pick your Room of Choice"
                 placeholder='Pick a Room'
@@ -98,13 +94,22 @@ const Checkout = () => {
                 onChange={(event) => {setRoomData(event); }}
                 >   
                 </Select>
-                <ReactDatePicker excludeDates={listDate.map((data) => {return new Date(data);})}  onChange={handleChange} selected={startdate}>
-                </ReactDatePicker>
-                <Button sx={{marginTop: 20}} onClick={() => {console.log(realtimedata)}}>Test</Button>
+
+                <Button sx={{marginTop: 20}} onClick={() => {console.log(console.log(realtimedata))}}>Test</Button>
 
             </Stepper.Step>
+            
             <Stepper.Step label="Second Step" description="Fill in basic information">
-                Step 2 Content
+            <Card sx={{display: 'flex', flexDirection:'row'}}>
+                    <ReactDatePicker  excludeDates={listDate.map((data) => 
+                                    {return new Date(data);})}  
+                                    onChange={(date) => setStartDate(date)} 
+                                    selected={startdate}
+                                    inline
+                                    >
+                                    
+                    </ReactDatePicker> 
+            </Card>
             </Stepper.Step>
             <Stepper.Step label="Last Step" description="Fill in basic information">
             Step 2 Content
