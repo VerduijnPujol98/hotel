@@ -83,8 +83,8 @@ const Checkout = () => {
                 </Box>
                 <Box sx={{display:'flex' , flexDirection:'row', justifyContent:'space-between', marginTop:20}}>
                 <ReactDatePicker excludeDateIntervals={Object.values(pushdate).map((data) => {
-                    return {start: (new Date(data.checkindate)), end: (new Date(data.checkoutdate))}
-                })}
+                                                        return {start: (new Date(data.checkindate)), end: (new Date(data.checkoutdate))}
+                                                      })}
 
                 ></ReactDatePicker>
                 </Box>
