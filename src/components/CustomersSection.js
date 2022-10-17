@@ -1,5 +1,5 @@
 import { Carousel } from '@mantine/carousel';
-import { createStyles, Container, Text, Button, Group, Grid, Skeleton, SimpleGrid, Card, Avatar } from '@mantine/core';
+import { createStyles, Container, Text, Button, Group, Grid, Skeleton, SimpleGrid, Card, Avatar, Blockquote } from '@mantine/core';
 import { GithubIcon } from '@mantine/ds';
 import { collection, getDocs } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
@@ -103,7 +103,7 @@ export function CustomersSection() {
         </Text>
         <Carousel
           withIndicators
-          height={350}
+          height={380}
           slideSize="33.33333%  "
           slideGap="md"
           slidesToScroll={1}
@@ -132,13 +132,9 @@ export function CustomersSection() {
                  
             </Group>
             
-            <Text size="md" sx={{ marginTop: 40 }} weight={400} >
-            {data.commentTitle}
-            </Text>
-            
-            <Text size="md" sx={{ marginTop: 20 }} color="dimmed" weight={300} >
+            <Blockquote color="teal" cite={data.commentTitle}> 
             {data.commentDescription}
-            </Text>
+            </Blockquote>
            
         </Card>
         </Carousel.Slide>

@@ -1,11 +1,13 @@
 import { Box, Button, Card, MediaQuery, Select, Stepper, Text, TextInput } from '@mantine/core';
-import { IconBed, IconShieldCheck, IconUserCheck } from '@tabler/icons';
+import { IconBed, IconHomeMove, IconHomeX, IconHotelService, IconShieldCheck, IconUserCheck } from '@tabler/icons';
 import { addDoc, collection, collectionGroup, doc, getDoc, getDocs, onSnapshot, query, where } from 'firebase/firestore';
 import React, { forwardRef, useEffect, useState } from 'react'
 import { db } from '../firebaseconfig';
 import eachDayOfInterval from 'date-fns/eachDayOfInterval';
 import ReactDatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css'
+import { useDispatch, useSelector } from 'react-redux';
+import { setRoom } from '../features/createSlice';
 
 const Checkout = () => {
 
@@ -67,6 +69,13 @@ const Checkout = () => {
       ));
 
 
+      const user = useSelector((state) => state.room.value)
+      const dispatch = useDispatch();
+
+
+      
+
+
 
     useEffect(() => {
         getDocument()
@@ -84,8 +93,6 @@ const Checkout = () => {
         <Stepper active={active} onStepClick={setActive}>
             <Stepper.Step icon={<IconBed size={18}/>}>
                 <Box sx={{display:'flex', marginTop: 20}}>
-
-
                     <Text color="dimmed" size='sm'>Your registration will be verified prior to your arrival.</Text>
                 </Box>
                 <Box sx={{display:'flex', marginTop:20}}>
@@ -93,7 +100,7 @@ const Checkout = () => {
                                 placeholder="Select a Room" 
                                 label="Select Room"
                                 value={select}
-                                onChange={(data) => {getDateFunction(data); setSelect()}}
+                                onChange={(data) => {getDateFunction(data); setSelect(data); }}
                                 data={Object.values(pushdoc).map((data) =>{
                                     return data
                                 })
@@ -101,42 +108,69 @@ const Checkout = () => {
                                 ></Select>
                 </Box>
                 <Box sx={{display:'flex' , flexDirection:'row', justifyContent:'space-between', marginTop:20}}>
-                <ReactDatePicker 
-                minDate={new Date()}
-                startDate={selectcheckinDate}
-                endDate={selectcheckoutDate}
-                selectsStart
-                selected={selectcheckinDate}
-                onChange={(date) => setSelectcheckinDate(date)}
-                customInput={<CheckinInput />}
-                excludeDateIntervals={Object.values(pushdate).map((data) => {
-                                        return {start: (new Date(data.checkindate)), end: (new Date(data.checkoutdate))}
-                                     })}
+                    <ReactDatePicker 
+                    minDate={new Date()}
+                    startDate={selectcheckinDate}
+                    endDate={selectcheckoutDate}
+                    selectsStart
+                    selected={selectcheckinDate}
+                    onChange={(date) => setSelectcheckinDate(date)}
+                    customInput={<CheckinInput />}
+                    excludeDateIntervals={Object.values(pushdate).map((data) => {
+                                            return {start: (new Date(data.checkindate)), end: (new Date(data.checkoutdate))}
+                                        })}
 
-                ></ReactDatePicker>
+                    >
+                    </ReactDatePicker>
 
-                <ReactDatePicker 
-                startDate={selectcheckinDate}
-                endDate={selectcheckoutDate}
-                selectsEnd
-                selected={selectcheckoutDate}
-                onChange={(date) => setSelectcheckoutDate(date)}
-                customInput={<CheckoutInput />}
-                excludeDateIntervals={Object.values(pushdate).map((data) => {
-                                        return {start: (new Date(data.checkindate)), end: (new Date(data.checkoutdate))}
-                                     })}
+                    <ReactDatePicker 
+                    startDate={selectcheckinDate}
+                    endDate={selectcheckoutDate}
+                    selectsEnd
+                    selected={selectcheckoutDate}
+                    onChange={(date) => setSelectcheckoutDate(date)}
+                    customInput={<CheckoutInput />}
+                    excludeDateIntervals={Object.values(pushdate).map((data) => {
+                                            return {start: (new Date(data.checkindate)), end: (new Date(data.checkoutdate))}
+                                        })}
 
-                ></ReactDatePicker>
-
+                    ></ReactDatePicker>
                 </Box>
 
                 <Box sx={{display:'flex', marginTop:40, flexDirection:'column'}}>
-                    <Button onClick={nextStep}>Next</Button>
+                    <Button onClick={() => {nextStep(); dispatch(setRoom({name: select, checkindate: `${selectcheckinDate.toDateString()}`, checkoutdate: `${selectcheckoutDate.toDateString()}`}));}}>Next</Button>
                 </Box>
             </Stepper.Step>
             <Stepper.Step icon={<IconUserCheck size={18}/>}>
                 <Box sx={{display:'flex', marginTop: 20}}>
-                    <Text color="dimmed" size='sm'>Your registration will be verified prior to your arrival.</Text>
+                    <IconHotelService />
+                    <Text variant="gradient" 
+                          weight={700}
+                          style={{ fontFamily: 'Greycliff CF, sans-serif' }} 
+                          gradient={{ from: '#3E7D45', to: 'green' }}  
+                          sx={{marginLeft:10}}>
+                                
+                        {user.name}</Text>
+                </Box>
+                <Box sx={{display:'flex', marginTop: 10}}>
+                    <IconHomeMove  />
+                    <Text variant="gradient" 
+                          weight={700}
+                          style={{ fontFamily: 'Greycliff CF, sans-serif' }} 
+                          gradient={{ from: '#3E7D45', to: 'green' }}  
+                          sx={{marginLeft:10}}>
+                            
+                        {user.checkindate}</Text>
+                </Box>
+                <Box sx={{display:'flex', marginTop: 10}}>
+                    <IconHomeX />
+                    <Text variant="gradient" 
+                          weight={700}
+                          style={{ fontFamily: 'Greycliff CF, sans-serif' }} 
+                          gradient={{ from: '#3E7D45', to: 'green' }}  
+                          sx={{marginLeft:10}}>
+
+                        {user.checkoutdate}</Text>
                 </Box>
                 <MediaQuery smallerThan="sm" styles={{ display:'block', width: '30vw'}}>
                 <Box sx={{display:'flex' , flexDirection:'row', marginTop:20}}>
@@ -156,7 +190,7 @@ const Checkout = () => {
                     <TextInput sx={{width:'47vw'}} placeholder="Zip/Postal Code"></TextInput>
                 </Box>
                 <Box sx={{display:'flex', marginTop:40, flexDirection:'column'}}>
-                    <Button onClick={nextStep}>Next</Button>
+                    <Button onClick={() => { nextStep();}}>Next</Button>
                 </Box>
             </Stepper.Step>
             <Stepper.Step icon={<IconShieldCheck size={18}/>}>
