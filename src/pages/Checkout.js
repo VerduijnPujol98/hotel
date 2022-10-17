@@ -1,17 +1,19 @@
 import { Box, Button, Card, Select, Stepper, Text, TextInput } from '@mantine/core';
 import { IconBed, IconShieldCheck, IconUserCheck } from '@tabler/icons';
-import { addDoc, collection, doc, getDocs, onSnapshot, query, where } from 'firebase/firestore';
+import { addDoc, collection, collectionGroup, doc, getDoc, getDocs, onSnapshot, query, where } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react'
 import { db } from '../firebaseconfig';
 import eachDayOfInterval from 'date-fns/eachDayOfInterval';
+import ReactDatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css'
 
 const Checkout = () => {
 
     const [active, setActive] = useState(0)
-    const [ bookeddate, setbookeddate] = useState('2022-10-19T00:00')
     const [ pushdoc, setPushDoc ] = useState("")
-    const [ pushcheckin, setPushcheckin ] = useState([])
-    const [ pushcheckout, setPushcheckout ] = useState([])
+    const [ pushdate, setPushdate ] = useState("")
+    const [ select, setSelect ] = useState("")
+
 
 
     const nextStep = () => setActive((current) => (current < 3 ? current + 1 : current));
@@ -28,39 +30,29 @@ const Checkout = () => {
         
     }
 
-    const unsubscribe = async (data) => {
-        const q = query(collection(db, "rooms"), where("name", "==", data))
-        const querySnapshot = await getDocs(q)
+    const getDateFunction = async (data) => {
+        const snapref2 = collection(db,`rooms/${data}/users`)
+        const querySnapshot = await getDocs(snapref2);
         let tempdata = []
-        let tempdata2 = []
         querySnapshot.forEach((doc) => {
-            
-        })
-    }
+            const data = doc.data()
+            tempdata.push(data)
+            console.log(doc.id, ' => ', data);
+            setPushdate(tempdata)
 
-    const addtestdoc = async () => {
-        const snapRef2 = collection(db, "/rooms/Studio 1 /users")
-        onSnapshot(snapRef2, (snapshot) => {
-            snapshot.forEach((doc) => {
-                console.log(doc.data());
-            })
-        })
+        });
     }
 
 
 
-    function getDatesInRange(startDate, endDate) {
-        return  setbookeddate(eachDayOfInterval({
-            start: new Date(startDate),
-            end: new Date(endDate)
-        }))
-    }
+
     
 
 
     useEffect(() => {
-        console.log(bookeddate)
         getDocument()
+        console.log(pushdoc)
+        getDateFunction()
     }, [])
 
 
@@ -68,17 +60,21 @@ const Checkout = () => {
     
   return (
     <div style={{display: 'flex', justifyContent: 'center',}}>
-        <Card shadow="sm" p="lg" radius="md" withBorder sx={{width: '50vw', marginTop: 50}}>
+        <Card shadow="sm" p="lg" radius="md" withBorder sx={{width: '50vw', marginTop: 50, overflow:'visible'}}>
         <Stepper active={active} onStepClick={setActive}>
             <Stepper.Step icon={<IconUserCheck size={18}/>}>
                 <Box sx={{display:'flex', marginTop: 20}}>
+
+
+
                     <Text color="dimmed" size='sm'>Your registration will be verified prior to your arrival.</Text>
                 </Box>
                 <Box sx={{display:'flex', justifyContent:'space-between', marginTop:20, flexDirection:'column'}}>
                     <Select sx={{width:'47vw'}} 
                                 placeholder="Select a Room" 
                                 label="Select Room"
-                                onChange={(data) => {unsubscribe(data);}}
+                                value={select}
+                                onChange={(data) => {getDateFunction(data); setSelect()}}
                                 data={Object.values(pushdoc).map((data) =>{
                                     return data
                                 })
@@ -86,14 +82,14 @@ const Checkout = () => {
                                 ></Select>
                 </Box>
                 <Box sx={{display:'flex' , flexDirection:'row', justifyContent:'space-between', marginTop:20}}>
-                <TextInput sx={{width:'23vw'}} placeholder={pushcheckin} label="First Name"></TextInput>
-                    <TextInput sx={{width:'23vw'}} placeholder="Your Last Name" label="Last Name"></TextInput>
+                <ReactDatePicker excludeDateIntervals={Object.values(pushdate).map((data) => {
+                    return {start: (new Date(data.checkindate)), end: (new Date(data.checkoutdate))}
+                })}
+
+                ></ReactDatePicker>
                 </Box>
                 <Box sx={{display:'flex', justifyContent:'space-between', marginTop:20, flexDirection:'column'}}>
-                    <Button onClick={() => {addtestdoc()}}>Add DB</Button>
-                </Box>
-                <Box sx={{display:'flex', justifyContent:'space-between', marginTop:20, flexDirection:'column'}}>
-                    <Button onClick={() => {console.log(bookeddate)}}>Test</Button>
+                    <Button onClick={() => {}}>Test</Button>
                 </Box>
                 <Box sx={{display:'flex', justifyContent:'space-between', marginTop:20, flexDirection:'column'}}>
                     <Button onClick={nextStep}>Next</Button>
