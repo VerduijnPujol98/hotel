@@ -1,116 +1,129 @@
-import React, { forwardRef, useEffect, useState } from 'react'
-import { useLocation } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
-import { Button, Card, Select, Stepper, Text } from '@mantine/core'
-import { collection, doc, getDocs, onSnapshot, query, where } from 'firebase/firestore'
-import { db } from '../firebaseconfig'
-import ReactDatePicker from 'react-datepicker'
-import 'react-datepicker/dist/react-datepicker.css'
-import { setRoom } from '../features/createSlice'
-import dayjs from 'dayjs'
+import { Box, Button, Card, Select, Stepper, Text, TextInput } from '@mantine/core';
+import { IconBed, IconShieldCheck, IconUserCheck } from '@tabler/icons';
+import { addDoc, collection, doc, getDocs, onSnapshot, query, where } from 'firebase/firestore';
+import React, { useEffect, useState } from 'react'
+import { db } from '../firebaseconfig';
+import eachDayOfInterval from 'date-fns/eachDayOfInterval';
 
 const Checkout = () => {
 
-    const room = useSelector((state) => state.room.value)
-    const [roomdata, setRoomData ] = useState([]);
-    const [getData, setGetData] = useState([])
-    const [getDatadate, setGetDatadate] = useState([0])
-    const [startdate, setStartDate ] = useState(new Date())
+    const [active, setActive] = useState(0)
+    const [ bookeddate, setbookeddate] = useState('2022-10-19T00:00')
+    const [ pushdoc, setPushDoc ] = useState("")
+    const [ pushcheckin, setPushcheckin ] = useState([])
+    const [ pushcheckout, setPushcheckout ] = useState([])
 
-    const dispatch = useDispatch()
 
-    const DocQuery = async () => {
-        const querySnapshot = await getDocs(collection(db, "rooms"));
-        const tempdata = [];
+    const nextStep = () => setActive((current) => (current < 3 ? current + 1 : current));
+    const prevStep = () => setActive((current) => (current > 0 ? current - 1 : current));
+
+
+    const getDocument = async () => {
+        const querySnapshot = await getDocs(collection(db, "rooms"))
+        let tempdata = []
         querySnapshot.forEach((doc) => {
-            tempdata.push(doc.data())
-            setGetData(tempdata)
+        tempdata.push(doc.data().name)
+        setPushDoc(tempdata)
+        })
+        
+    }
+
+    const unsubscribe = async (data) => {
+        const q = query(collection(db, "rooms"), where("name", "==", data))
+        const querySnapshot = await getDocs(q)
+        let tempdata = []
+        let tempdata2 = []
+        querySnapshot.forEach((doc) => {
+            
         })
     }
 
-    const map = Object.values(getData).map((data) => {
-        return(
-            {value: data.name, label:data.name}
-        )
-
-    })
-
-    
-        const [realtimedata, setrealtimedata] = useState([]);
-        const roomRef = collection(db, "rooms")
-        const q = query(roomRef, where("name", "==", roomdata))
-        const unsubscribe = onSnapshot(q, (querySnapshot) => {
-            const snapshot = []
-            querySnapshot.forEach((doc) => {
-                snapshot.push(doc.data())
-                setrealtimedata(snapshot)
+    const addtestdoc = async () => {
+        const snapRef2 = collection(db, "/rooms/Studio 1 /users")
+        onSnapshot(snapRef2, (snapshot) => {
+            snapshot.forEach((doc) => {
+                console.log(doc.data());
             })
         })
+    }
 
+
+
+    function getDatesInRange(startDate, endDate) {
+        return  setbookeddate(eachDayOfInterval({
+            start: new Date(startDate),
+            end: new Date(endDate)
+        }))
+    }
+    
 
 
     useEffect(() => {
-        DocQuery()
-        console.log(getData)
-
+        console.log(bookeddate)
+        getDocument()
     }, [])
 
-    const [active, setActive] = useState(0);
-    const nextStep = () => setActive((current) => (current < 3 ? current + 1 : current))
-    const prevStep = () => setActive((current) => (current > 0 ? current - 1 : current))
+
 
     
-
-        const handleChange = (value) => {
-            setStartDate(value)
-        }
-
-
-
-        const listDate = [];
-        const startDate ='2022-10-19T00:00';
-        const endDate = '2022-10-20T00:00';
-        const dateMove = new Date(startDate);
-        let strDate = startDate;
-
-        while (strDate < endDate) {
-        strDate = dateMove.toISOString().slice(0, 10);
-        listDate.push(strDate);
-        dateMove.setDate(dateMove.getDate() + 1);
-        };
-
-
-
-
-
-    //(date) => date.getTime() === new Date('2022-10-20T00:00').getTime()
-
   return (
-    <div style={{display: 'flex', alignContent:'center', justifyContent: 'center'}}> 
-    <Card shadow="sm" p="lg" radius="md" withBorder sx={{width: '50vw', margin: 100, overflow: 'visible',}}>
-        <Stepper active={active} onStepClick={setActive} breakpoint="sm">
-            <Stepper.Step label="First Step" description="Fill in basic information">
-                <Select
-                label="Pick your Room of Choice"
-                placeholder='Pick a Room'
-                data={map}
-                value={roomdata.name}
-                onChange={(event) => {setRoomData(event); }}
-                >   
-                </Select>
-                <ReactDatePicker excludeDates={listDate.map((data) => {return new Date(data);})}  onChange={handleChange} selected={startdate}>
-                </ReactDatePicker>
-                <Button sx={{marginTop: 20}} onClick={() => {console.log(realtimedata)}}>Test</Button>
+    <div style={{display: 'flex', justifyContent: 'center',}}>
+        <Card shadow="sm" p="lg" radius="md" withBorder sx={{width: '50vw', marginTop: 50}}>
+        <Stepper active={active} onStepClick={setActive}>
+            <Stepper.Step icon={<IconUserCheck size={18}/>}>
+                <Box sx={{display:'flex', marginTop: 20}}>
+                    <Text color="dimmed" size='sm'>Your registration will be verified prior to your arrival.</Text>
+                </Box>
+                <Box sx={{display:'flex', justifyContent:'space-between', marginTop:20, flexDirection:'column'}}>
+                    <Select sx={{width:'47vw'}} 
+                                placeholder="Select a Room" 
+                                label="Select Room"
+                                onChange={(data) => {unsubscribe(data);}}
+                                data={Object.values(pushdoc).map((data) =>{
+                                    return data
+                                })
+                            }
+                                ></Select>
+                </Box>
+                <Box sx={{display:'flex' , flexDirection:'row', justifyContent:'space-between', marginTop:20}}>
+                <TextInput sx={{width:'23vw'}} placeholder={pushcheckin} label="First Name"></TextInput>
+                    <TextInput sx={{width:'23vw'}} placeholder="Your Last Name" label="Last Name"></TextInput>
+                </Box>
+                <Box sx={{display:'flex', justifyContent:'space-between', marginTop:20, flexDirection:'column'}}>
+                    <Button onClick={() => {addtestdoc()}}>Add DB</Button>
+                </Box>
+                <Box sx={{display:'flex', justifyContent:'space-between', marginTop:20, flexDirection:'column'}}>
+                    <Button onClick={() => {console.log(bookeddate)}}>Test</Button>
+                </Box>
+                <Box sx={{display:'flex', justifyContent:'space-between', marginTop:20, flexDirection:'column'}}>
+                    <Button onClick={nextStep}>Next</Button>
+                </Box>
+            </Stepper.Step>
+            <Stepper.Step icon={<IconBed size={18}/>}>
+                <Box sx={{display:'flex', marginTop: 20}}>
+                    <Text color="dimmed" size='sm'>Your registration will be verified prior to your arrival.</Text>
+                </Box>
+                <Box sx={{display:'flex' , flexDirection:'row', justifyContent:'space-between', marginTop:20}}>
+                    <TextInput sx={{width:'23vw'}} placeholder="Your First Name" label="First Name"></TextInput>
+                    <TextInput sx={{width:'23vw'}} placeholder="Your Last Name" label="Last Name"></TextInput>
+                </Box>
+                <Box sx={{display:'flex', justifyContent:'space-between', marginTop:40, flexDirection:'column'}}>
+                    <TextInput sx={{width:'47vw'}} placeholder="Street Address" label="Address"></TextInput>
+                    <TextInput sx={{width:'47vw', marginTop:20}} placeholder="Street Address Line 2"></TextInput>
+                </Box>
+                <Box sx={{display:'flex' , flexDirection:'row', justifyContent:'space-between', marginTop:20}}>
+                    <TextInput sx={{width:'23vw'}} placeholder="City" ></TextInput>
+                    <TextInput sx={{width:'23vw'}} placeholder="State/Province"></TextInput>
+                </Box>
+                <Box sx={{display:'flex', justifyContent:'space-between', marginTop:20, flexDirection:'column'}}>
+                    <TextInput sx={{width:'47vw'}} placeholder="Zip/Postal Code"></TextInput>
+                </Box>
+            </Stepper.Step>
+            <Stepper.Step icon={<IconShieldCheck size={18}/>}>
 
             </Stepper.Step>
-            <Stepper.Step label="Second Step" description="Fill in basic information">
-                Step 2 Content
-            </Stepper.Step>
-            <Stepper.Step label="Last Step" description="Fill in basic information">
-            Step 2 Content
-        </Stepper.Step>
         </Stepper>
-    </Card>
+        </Card>
     </div>
   )
 }
