@@ -148,8 +148,8 @@ export function Roomavailability() {
             const slides = Object.values(images).map((image) => {  
               return(
               <Carousel.Slide key={image}>
-              <Image src={image} height={220} />
-            </Carousel.Slide>
+                <Image src={image} height={220} />
+              </Carousel.Slide>
               )
             })
           return(
