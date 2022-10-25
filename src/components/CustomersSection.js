@@ -91,7 +91,6 @@ export function CustomersSection() {
     printData()
   }, [])
   return (
-    <div className={classes.wrapper}>
       <Container size='md' className={classes.inner}>
 
       <Text size="lg" weight={500} className={classes.title} >
@@ -143,7 +142,5 @@ export function CustomersSection() {
       </Carousel>
       
       </Container>
-
-    </div>
   );
 }

@@ -1,4 +1,4 @@
-import { createStyles, Container, Text, Button, Group, Grid, Skeleton, SimpleGrid } from '@mantine/core';
+import { createStyles, Container, Text, Button, Group, Grid, Skeleton, SimpleGrid, Overlay, Image } from '@mantine/core';
 import { GithubIcon } from '@mantine/ds';
 
 const BREAKPOINT = '@media (max-width: 755px)';
@@ -69,7 +69,7 @@ const useStyles = createStyles((theme) => ({
 export function HeroTitle() {
   const { classes } = useStyles();
   return (
-    <div className={classes.wrapper}>
+
       <Container size='md' className={classes.inner}>
 
       <Text size="lg" weight={500} className={classes.title} >
@@ -96,6 +96,7 @@ export function HeroTitle() {
 
 
       <Container>
+
         <Skeleton>
         <Text color="dimmed" className={classes.description}  mt="md">
         G9 Homestay is located in an alley in central District 1 with just about a 10-15 minutes walk away from Backpackers street (Bui Vien). 
@@ -118,6 +119,5 @@ export function HeroTitle() {
       </SimpleGrid>
       </Container>
 
-    </div>
   );
 }

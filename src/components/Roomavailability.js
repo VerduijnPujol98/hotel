@@ -1,5 +1,5 @@
 import { Carousel } from '@mantine/carousel';
-import { createStyles, Container, Text, Button, Group, Grid, Skeleton, SimpleGrid, Card, Avatar, Image, useMantineTheme } from '@mantine/core';
+import { createStyles, Container, Text, Button, Group, Grid, Skeleton, SimpleGrid, Card, Avatar, Image, useMantineTheme, Overlay } from '@mantine/core';
 import { Dropzone, IMAGE_MIME_TYPE } from '@mantine/dropzone';
 import { GithubIcon } from '@mantine/ds';
 import { IconPhoto, IconStar, IconUpload, IconX } from '@tabler/icons';
@@ -129,7 +129,7 @@ export function Roomavailability() {
 
 
   return (
-    <div className={classes.wrapper}>
+  <div>
       <Container size='md' className={classes.inner}>
 
       <Text size="lg" weight={500} className={classes.title} >
@@ -212,8 +212,8 @@ export function Roomavailability() {
                 )
               })}
         </SimpleGrid>
-      </Container>
 
-    </div>
+      </Container>
+</div>
   );
 }

@@ -1,22 +1,17 @@
 
 import { MantineProvider } from "@mantine/core";
-import { CustomersSection } from "./components/CustomersSection";
-import { DatePickerThing } from "./components/DatePickerThing";
-import { HeaderSimple } from "./components/HeaderSimple";
-import { HeroContentLeft } from "./components/HeroContentLeft";
-import { HeroTitle } from "./components/HeroTitle";
-import { Roomavailability } from "./components/Roomavailability";
+
 import React from "react";
 import {
   BrowserRouter as Router,
   Routes,
   Route,
-  Link
 } from "react-router-dom";
 import Home from "./pages/Home";
 import Admin from "./pages/Admin";
 import Checkout from "./pages/Checkout";
-
+import Work from "./pages/Work";
+import { HeaderResponsive } from "./components/HeaderResponsive";
 
 function App() {
   return (
@@ -26,21 +21,20 @@ function App() {
     brand: ['#3E7D45', '#3E7D45', '#3E7D45', '#3E7D45', '#3E7D45', '#3E7D45', '#3E7D45', '#3E7D45', '#3E7D45','#3E7D45' ], },
     primaryColor: 'brand',
     }}>
-    <Router>
       <div className="App">
+    <Router>
         <Routes>
-          <Route path="/" element={<Home />}>
+        <Route path="/" element={<Home />}>
           </Route>
-          <Route path="/admin" element={<Admin />}>
-          </Route>
-          <Route path="/admin" element={<Admin />}>
+          <Route path="/work" element={<Work/>}>
           </Route>
           <Route path="/checkout" element={<Checkout />}>
           </Route>
         </Routes>
-      </div>
     </Router>
+    </div>
     </MantineProvider>
+
   );
 }
 
